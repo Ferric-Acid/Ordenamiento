@@ -10,7 +10,7 @@ namespace Ordenamiento
 {
     internal class Algor
     {
-        public static void Insertion(float[] list)
+        public static float[] Insertion(float[] list)
         {
             float[] ordered = new float[list.Length];
             float[] process = new float[list.Length + 1];
@@ -44,15 +44,11 @@ namespace Ordenamiento
                 }
             }
 
-            for (int a = 0; a < list.Length; a++)
-            {
-                list[a] = process[a + 1];
-                Console.WriteLine(list[a]);
-            }
+            return list;
 
         }
 
-        public static void Bubble(float[] list)
+        public static float[] Bubble(float[] list)
         {
             float[] ordered = new float[list.Length];
             float[] process = new float[list.Length + 1];
@@ -90,65 +86,58 @@ namespace Ordenamiento
             for (int a = 0; a < list.Length; a++)
             {
                 list[a] = process[a + 1];
-                Console.WriteLine(list[a]);
             }
+
+            return list;
         }
 
 
 
         public static float[] Bogo(float[] list)
         {
-            float[] process = new float[list.Length + 1];
+            float[] process = new float[list.Length];
             for (int i = 0; i < list.Length; i++)
             {
                 process[i] = list[i]; //No tendrá espacios vacíos.
             }
-            
-            float[] Shuffle(float[] sample)
+
+            void Shuffle(float[] sample)
             {
                 /*
                 Este es el algoritmo usado para hacer que el orden de los elementos sea aleatorio, específicamente, el algoritmo Fisher-Yates.
                 */
-                float[] randomized = new float[sample.Length];
-
-                for (int i = 0; i < list.Length; i++)
-                {
-                    randomized[i] = sample[i]; //No tendrá espacios vacíos.
-                }
-
                 int position = 0;
-                float r_swapped1 = 0.0f;
-                float r_swapped2 = 0.0f;
+                float r_swapped1 = 0f;
+                float r_swapped2 = 0f;
                 Random pos_random = new Random();
 
                 for (int i = 0; i < sample.Length; i++)
                 {
-                    position = pos_random.Next(i,list.Length);
-                    r_swapped1 = randomized[i];
-                    r_swapped2 = randomized[position];
-                    randomized[i] = r_swapped2;
-                    randomized[position] = r_swapped1;
+                    position = pos_random.Next(i, sample.Length);
+                    r_swapped1 = sample[i];
+                    r_swapped2 = sample[position];
+                    sample[i] = r_swapped2;
+                    sample[position] = r_swapped1;
                 }
-
-                return randomized; 
             }
 
-            bool sorted = false;
-            while (sorted == false)
+            bool isSorted(float[] sample)
             {
-                for (int p = 0; p < list.Length; p++)
+                for (int i = 0; i < sample.Length - 1; ++i)
                 {
-                    if (process[p] > process[p + 1])
+                    if (sample[i] > sample[i + 1])
                     {
-                        process = Shuffle(process);
-                        break;
+                        return false;
                     }
-                    sorted = true;
                 }
+                return true;
             }
 
+            while (isSorted(process) == false)
+            {
+                Shuffle(process);
+            }
             return process;
         }
-
     }
 }
