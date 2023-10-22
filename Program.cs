@@ -14,7 +14,7 @@ namespace Ordenamiento
         static void Main(string[] args)
         {
             // Nombre preliminar: El Ordenamiento y Tu
-            float[] arr_og = {35.1f, 97.6f, 41.2f, 98.2f, 23.7f};
+            float[] arr_og = {97.6f, 41.2f, 35.1f};
             Algor.Bogo(arr_og);
             foreach (float element in arr_og)
             {

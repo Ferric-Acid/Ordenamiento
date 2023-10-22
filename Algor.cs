@@ -132,7 +132,6 @@ namespace Ordenamiento
 
                 return randomized; 
             }
-            
 
             bool sorted = false;
             while (sorted == false)
@@ -141,16 +140,11 @@ namespace Ordenamiento
                 {
                     if (process[p] > process[p + 1])
                     {
+                        process = Shuffle(process);
                         break;
                     }
                     sorted = true;
                 }
-
-                if (sorted == false)
-                {
-                    process = Shuffle(process);
-                }
-
             }
 
             return process;
