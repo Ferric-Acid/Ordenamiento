@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Dynamic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security.Cryptography.X509Certificates;
@@ -91,8 +93,6 @@ namespace Ordenamiento
             return list;
         }
 
-
-
         public static float[] Bogo(float[] list)
         {
             float[] process = new float[list.Length];
@@ -138,6 +138,115 @@ namespace Ordenamiento
                 Shuffle(process);
             }
             return process;
+        }
+
+        public static float[] Merge(float[] list)
+        {
+            float CompareIfEmpty(float x, float y)
+            {
+                string xs = Convert.ToString(x);
+                string ys = Convert.ToString(y);
+
+                if (String.IsNullOrEmpty(xs) && String.IsNullOrEmpty(ys))
+                {
+                    return float.Parse("");
+                }
+                else if (String.IsNullOrEmpty(ys))
+                {
+                    return x;
+                }
+                else if (String.IsNullOrEmpty(xs))
+                {
+                    return y;
+                }
+                else
+                {
+                    return Math.Min(x, y);
+                }
+            }
+
+            void SublistSort(float[,] div, int current_row, int f_lim, int s_lim)
+            {
+                void Move(int begin, int end)
+                {
+                    for (int m = begin; m < end; m++)
+                    {
+                        div[current_row, m] = div[current_row, m++];
+                    }
+                }
+
+                int total = (int)Math.Pow(2, (div.GetLength(0) - current_row));
+                float cont1 = 0;
+                float cont2 = 0;
+                float minim = 0;
+                for (int i = 0; i < total; i++)
+                {
+                    cont1 = div[current_row, f_lim];
+                    cont2 = div[current_row, s_lim];
+                    minim = CompareIfEmpty(cont1, cont2);
+
+                    if (minim == cont1)
+                    {
+                        Move(f_lim, s_lim);
+                    }
+                    else
+                    {
+                        Move(s_lim, div.GetLength(0));
+                    }
+                }
+            }
+
+            int columns = 0;
+            int rows = 0;
+            while (columns < list.Length)
+            {
+                rows++;
+                columns = (int)Math.Pow(2, rows); // El número de filas será el exponente que haga una potencia de 2 mayor o igual al número de columnas, además de una fila adicional, y el número de columnas es la potencia resultante.
+            }
+
+            rows++;
+
+            float[,] process = new float[rows, columns];
+            for (int y = 0; y < list.Length; y++)
+            {
+                process[0, y] = list[y];
+            }
+
+            for (int xd = 1; xd < process.GetLength(0); xd++)
+            {
+                for (int yd = 0; yd < process.GetLength(1); yd++)
+                {
+                    process[xd, yd] = process[0, yd];
+                }
+            }
+
+
+            int subsorts = rows / 2;
+
+            int mag = 0;
+            for (int s = rows - 1; s > 0; s--)
+            {
+                for (int sub_b = 0; sub_b > subsorts; sub_b++)
+                {
+                    mag = rows - s;
+                    SublistSort(process, s, (int)(Math.Pow(2, mag) * sub_b), (int)(Math.Pow(2, mag) * (++sub_b) - 1));
+                    // El límite inferior es definido por la función f(x)=(2^m)x, y el límite superior por la función g(x)=(2^m)(x+1)-1
+                    // Donde x = sub_b, m = mag.
+                }
+                for (int db = 0; db < process.GetLength(1); db++)
+                {
+                    process[s - 1, db] = process[s, db];
+                }
+                subsorts /= 2;
+            }
+
+            float[] ordered = new float[process.GetLength(1)];
+            for (int d = 0; d < process.GetLength(1); d++)
+            {
+                ordered[d] = process[1, d];
+            }
+
+            return ordered;
         }
     }
 }
