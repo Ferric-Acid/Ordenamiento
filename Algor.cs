@@ -46,7 +46,7 @@ namespace Ordenamiento
                 }
             }
 
-            return list;
+            return process;
 
         }
 
@@ -95,11 +95,7 @@ namespace Ordenamiento
 
         public static float[] Bogo(float[] list)
         {
-            float[] process = new float[list.Length];
-            for (int i = 0; i < list.Length; i++)
-            {
-                process[i] = list[i]; //No tendrá espacios vacíos.
-            }
+            
 
             void Shuffle(float[] sample)
             {
@@ -133,69 +129,68 @@ namespace Ordenamiento
                 return true;
             }
 
-            while (isSorted(process) == false)
+            while (isSorted(list) == false)
             {
-                Shuffle(process);
+                Shuffle(list); // Se verificará si la lista está ordenada, de no estarlo, se creará una permutación al azar de la lista.
             }
-            return process;
+            return list;
+        }
+
+        public static float[] Shell(float[] list)
+        {
+            int extra = list.Length / 2 + 1;
+
+            float[] process = new float[list.Length + extra];
+
+            for (int i = 0; i < list.Length; i++)
+            {
+                process[i + extra] = list[i];
+            }
+
+            /* El ordenamiento Shell es muy similar al ordenamiento por inserción.
+             * El proceso de verificación de orden es idéntico, pero las comparaciones se hacen en intervalos mayores a uno.
+             * El intervalo entre elementos va reduciendo hasta llegar a 1.
+             * Cuando el intervalo entre elementos sea 1, sólo se hace un ordenamiento por inserción, pero será más rápido ya que la lista está parcialmente ordenada.
+             * Los intervalos se determinarán en la definición original del ordenamiento Shell: f(x) = ⌊x/2^n⌋.
+             * Donde x = Número de elementos en la lista; y n = Exponente, aumentará por 1 por cada iteración, hasta que el f(x) = 1.
+             */
+
+            float contained1 = 0;
+            float contained2 = 0;
+            int minus = 0;
+            int exp = 1;
+            int interval = list.Length / (int)(Math.Pow(2, exp));
+            int solid = interval;
+
+            while (interval >= 1) 
+            {
+                for (int key = extra; key < process.Length; key += interval)
+                {
+                    minus = 0;
+                    while (process[key - minus] < process[key - interval - minus])
+                    {
+                        contained1 = process[key - minus];
+                        contained2 = process[key - interval - minus];
+                        process[key - minus] = contained2;
+                        process[key - interval - minus] = contained1;
+                        minus += interval;
+                    }
+                }
+                exp++;
+                interval = list.Length / (int)(Math.Pow(2, exp));
+            }
+
+            float[] ordered = new float[list.Length];
+            for (int i = extra; i < process.Length; i++)
+            {
+                ordered[i - extra] = process[i];
+            }
+
+            return ordered;
         }
 
         public static float[] Merge(float[] list)
         {
-            float CompareIfEmpty(float x, float y)
-            {
-                string xs = Convert.ToString(x);
-                string ys = Convert.ToString(y);
-
-                if (String.IsNullOrEmpty(xs) && String.IsNullOrEmpty(ys))
-                {
-                    return float.Parse("");
-                }
-                else if (String.IsNullOrEmpty(ys))
-                {
-                    return x;
-                }
-                else if (String.IsNullOrEmpty(xs))
-                {
-                    return y;
-                }
-                else
-                {
-                    return Math.Min(x, y);
-                }
-            }
-
-            void SublistSort(float[,] div, int current_row, int f_lim, int s_lim)
-            {
-                void Move(int begin, int end)
-                {
-                    for (int m = begin; m < end; m++)
-                    {
-                        div[current_row, m] = div[current_row, m++];
-                    }
-                }
-
-                int total = (int)Math.Pow(2, (div.GetLength(0) - current_row));
-                float cont1 = 0;
-                float cont2 = 0;
-                float minim = 0;
-                for (int i = 0; i < total; i++)
-                {
-                    cont1 = div[current_row, f_lim];
-                    cont2 = div[current_row, s_lim];
-                    minim = CompareIfEmpty(cont1, cont2);
-
-                    if (minim == cont1)
-                    {
-                        Move(f_lim, s_lim);
-                    }
-                    else
-                    {
-                        Move(s_lim, div.GetLength(0));
-                    }
-                }
-            }
-
             int columns = 0;
             int rows = 0;
             while (columns < list.Length)
@@ -247,6 +242,61 @@ namespace Ordenamiento
             }
 
             return ordered;
+
+            float CompareIfEmpty(float x, float y)
+            {
+                string xs = Convert.ToString(x);
+                string ys = Convert.ToString(y);
+
+                if (String.IsNullOrEmpty(xs) && String.IsNullOrEmpty(ys))
+                {
+                    return float.Parse("");
+                }
+                else if (String.IsNullOrEmpty(ys))
+                {
+                    return x;
+                }
+                else if (String.IsNullOrEmpty(xs))
+                {
+                    return y;
+                }
+                else
+                {
+                    return Math.Min(x, y);
+                }
+            }
+
+            void SublistSort(float[,] div, int current_row, int f_lim, int s_lim)
+            {
+                void Move(int begin, int end)
+                {
+                    for (int m = begin; m < end; m++)
+                    {
+                        div[current_row, m] = div[current_row, m++];
+                    }
+                }
+
+                int total = (int)Math.Pow(2, (div.GetLength(0) - current_row));
+                float cont1 = 0;
+                float cont2 = 0;
+                float minim = 0;
+                for (int i = 0; i < total; i++)
+                {
+                    cont1 = div[current_row, f_lim];
+                    cont2 = div[current_row, s_lim];
+                    minim = CompareIfEmpty(cont1, cont2);
+                    div[current_row - 1, i] = minim;
+
+                    if (minim == cont1)
+                    {
+                        Move(f_lim, s_lim);
+                    }
+                    else
+                    {
+                        Move(s_lim, div.GetLength(0));
+                    }
+                }
+            }
         }
     }
 }
