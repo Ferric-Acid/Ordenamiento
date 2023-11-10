@@ -25,7 +25,7 @@ namespace Ordenamiento
             /* El ordenamiento por inserción verifica si los elementos process[0] y process[1] están ordenados,
             de ser así, sigue con process[1] y process[2], de tal manera que compara los elementos process[n] y process[n + 1]
             con todos los elementos. Si encuentra que un par de elementos process[n] y process[n + 1] no está ordenado en orden ascendente, invierte el orden
-            de los elementos y retrocede para comparar los elementos process[n - 1] y process[n], si su orden no es el correcto, inverte el orden de los elementos
+            de los elementos y retrocede para comparar los elementos process[n - 1] y process[n], si su orden no es el correcto, invierte el orden de los elementos
             y vuelve a retroceder, hasta que el orden de los elementos sea el correcto.
              */
 
@@ -46,13 +46,16 @@ namespace Ordenamiento
                 }
             }
 
-            return process;
+            for (int i = 1; i < process.Length; i++)
+            {
+                ordered[i - 1] = process[i];
+            }
 
+            return ordered;
         }
 
         public static float[] Bubble(float[] list)
         {
-            float[] ordered = new float[list.Length];
             float[] process = new float[list.Length + 1];
 
             for (int i = 0; i < list.Length; i++)
@@ -68,11 +71,11 @@ namespace Ordenamiento
 
             float contained1 = 0;
             float contained2 = 0;
-            int nec_iterations = list.Length;
+            int needed_iterations = list.Length;
 
             for (int i = 0; i < list.Length; i++)
             {
-                for (int b = 0; b < nec_iterations; b++)
+                for (int b = 0; b < needed_iterations; b++)
                 {
                     if (process[b] > process[b + 1])
                     {
@@ -82,7 +85,7 @@ namespace Ordenamiento
                         process[b + 1] = contained1;
                     }
                 }
-                nec_iterations--;
+                needed_iterations--;
             }
 
             for (int a = 0; a < list.Length; a++)
@@ -95,8 +98,6 @@ namespace Ordenamiento
 
         public static float[] Bogo(float[] list)
         {
-            
-
             void Shuffle(float[] sample)
             {
                 /*
@@ -146,7 +147,6 @@ namespace Ordenamiento
             {
                 process[i + extra] = list[i];
             }
-
             /* El ordenamiento Shell es muy similar al ordenamiento por inserción.
              * El proceso de verificación de orden es idéntico, pero las comparaciones se hacen en intervalos mayores a uno.
              * El intervalo entre elementos va reduciendo hasta llegar a 1.
@@ -154,15 +154,13 @@ namespace Ordenamiento
              * Los intervalos se determinarán en la definición original del ordenamiento Shell: f(x) = ⌊x/2^n⌋.
              * Donde x = Número de elementos en la lista; y n = Exponente, aumentará por 1 por cada iteración, hasta que el f(x) = 1.
              */
-
             float contained1 = 0;
             float contained2 = 0;
             int minus = 0;
-            int exp = 1;
-            int interval = list.Length / (int)(Math.Pow(2, exp));
-            int solid = interval;
+            int exponent = 1;
+            int interval = list.Length / (int)(Math.Pow(2, exponent));
 
-            while (interval >= 1) 
+            while (interval > 0) 
             {
                 for (int key = extra; key < process.Length; key += interval)
                 {
@@ -176,8 +174,8 @@ namespace Ordenamiento
                         minus += interval;
                     }
                 }
-                exp++;
-                interval = list.Length / (int)(Math.Pow(2, exp));
+                exponent++;
+                interval = list.Length / (int)(Math.Pow(2, exponent));
             }
 
             float[] ordered = new float[list.Length];
@@ -196,15 +194,18 @@ namespace Ordenamiento
             while (columns < list.Length)
             {
                 rows++;
-                columns = (int)Math.Pow(2, rows); // El número de filas será el exponente que haga una potencia de 2 mayor o igual al número de columnas, además de una fila adicional, y el número de columnas es la potencia resultante.
+                columns = (int)Math.Pow(2, rows);
+                /* El número de filas será el exponente que haga una potencia de 2 mayor o 
+                 * igual al número de columnas, además de una fila adicional.
+                 * y el número de columnas es la potencia resultante.
+                 */
             }
-
             rows++;
-
-            float[,] process = new float[rows, columns];
+            string[,] process = new string[rows, columns];
             for (int y = 0; y < list.Length; y++)
             {
-                process[0, y] = list[y];
+                string elem = Convert.ToString(list[y]);
+                process[0, y] = elem;
             }
 
             for (int xd = 1; xd < process.GetLength(0); xd++)
@@ -216,84 +217,88 @@ namespace Ordenamiento
             }
 
 
-            int subsorts = rows / 2;
+            int subsorts = columns / 2;
 
-            int mag = 0;
+            int magnitude = 0;
             for (int s = rows - 1; s > 0; s--)
             {
                 for (int sub_b = 0; sub_b > subsorts; sub_b++)
                 {
-                    mag = rows - s;
-                    SublistSort(process, s, (int)(Math.Pow(2, mag) * sub_b), (int)(Math.Pow(2, mag) * (++sub_b) - 1));
-                    // El límite inferior es definido por la función f(x)=(2^m)x, y el límite superior por la función g(x)=(2^m)(x+1)-1
-                    // Donde x = sub_b, m = mag.
+                    magnitude = rows - s;
+                    SublistSort(process, s, (int)(Math.Pow(2, magnitude) * sub_b), (int)(Math.Pow(2, magnitude) * (sub_b + 1) - 1));
+                    /* El límite inferior es definido por la función f(x)=(2^m)x, y el límite superior 
+                     * por la función g(x)=(2^m)(x+1)-1
+                     * Donde x = sub_b, m = mag*/
                 }
-                for (int db = 0; db < process.GetLength(1); db++)
-                {
-                    process[s - 1, db] = process[s, db];
-                }
-                subsorts /= 2;
             }
 
-            float[] ordered = new float[process.GetLength(1)];
-            for (int d = 0; d < process.GetLength(1); d++)
+            float[] ordered = new float[list.Length];
+            for (int d = 0; d < list.Length; d++)
             {
-                ordered[d] = process[1, d];
+                float ordered_element = float.Parse(process[0, d]);
+                ordered[d] = ordered_element;
             }
 
             return ordered;
 
-            float CompareIfEmpty(float x, float y)
+            string CompareIfEmpty(string xs, string ys)
             {
-                string xs = Convert.ToString(x);
-                string ys = Convert.ToString(y);
+                float x = float.Parse((xs));
+                float y = float.Parse((ys));
+                float minimum = Math.Min(x, y);
 
                 if (String.IsNullOrEmpty(xs) && String.IsNullOrEmpty(ys))
                 {
-                    return float.Parse("");
+                    return "";
                 }
                 else if (String.IsNullOrEmpty(ys))
                 {
-                    return x;
+                    return xs;
                 }
                 else if (String.IsNullOrEmpty(xs))
                 {
-                    return y;
-                }
-                else
+                    return ys;
+                } else
                 {
-                    return Math.Min(x, y);
+                    if (minimum == x)
+                    {
+                        return xs;
+                    } else
+                    {
+                        return ys;
+                    }
                 }
             }
 
-            void SublistSort(float[,] div, int current_row, int f_lim, int s_lim)
+            void SublistSort(string[,] sample_matrix, int current_row, int first_limit, int second_limit)
             {
                 void Move(int begin, int end)
                 {
-                    for (int m = begin; m < end; m++)
+                    for (int m = begin + 1; m < end; m++)
                     {
-                        div[current_row, m] = div[current_row, m++];
+                        sample_matrix[current_row, m - 1] = sample_matrix[current_row, m];
                     }
+                    sample_matrix[current_row, end] = "";
                 }
 
-                int total = (int)Math.Pow(2, (div.GetLength(0) - current_row));
-                float cont1 = 0;
-                float cont2 = 0;
-                float minim = 0;
+                int total = (int)Math.Pow(2, (sample_matrix.GetLength(0) - current_row));
+                string cont1 = "";
+                string cont2 = "";
+                string minimum_str = "";
                 for (int i = 0; i < total; i++)
                 {
-                    cont1 = div[current_row, f_lim];
-                    cont2 = div[current_row, s_lim];
-                    minim = CompareIfEmpty(cont1, cont2);
-                    div[current_row - 1, i] = minim;
+                    cont1 = sample_matrix[current_row, first_limit];
+                    cont2 = sample_matrix[current_row, second_limit];
+                    minimum_str = CompareIfEmpty(cont1, cont2);
+                    sample_matrix[current_row - 1, i] = minimum_str;
 
-                    if (minim == cont1)
+                    if (minimum_str == cont1)
                     {
-                        Move(f_lim, s_lim);
+                        Move(first_limit, second_limit);
                     }
                     else
                     {
-                        Move(s_lim, div.GetLength(0));
+                        Move(second_limit, sample_matrix.GetLength(0));
                     }
                 }
             }
