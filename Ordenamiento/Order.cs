@@ -19,6 +19,93 @@ namespace Ordenamiento
             Console.WriteLine("Algoritmos de ordenamiento\nElige el algoritmo que desees revisar.\n\n1. Ordenamiento por burbuja" +
                 "\n2. Ordenamiento por inserción.\n3. Ordenamiento Shell.\n4. Bogosort.\n5. Regresar al menú anterior.");
 
+            void CallSortingAlgorithm(Func<float[], float[]> Fx_Sorting)
+            {
+                /* Pendientes:
+                 * Llamar método de algoritmo de ordenamiento.
+                 * Pedir si se desea ordenar una lista introducida directamente a la consola o que se consigan datos de un archivo de texto.
+                 * Ordenar elementos introducidos directamente y mostrar arreglo ordenado.
+                 * Ordenar elementos en un archivo de texto (se pueden leer los datos para introducirlos al arreglo, junto a su cantidad para crear el arreglo de tamaño definido).
+                 * Contar tiempo para ordenamiento (almacena el tiempo al inicio de la operación y al final, obtén la diferencia entre los tiempos y muestra tal diferencia.)
+                 */
+
+                Console.WriteLine("\nIntenta ordenar una lista con este algoritmo, ¿deseas introducir la lista directamente o extraerla desde un archivo de texto?\n" +
+                    "ADVERTENCIA: Sólo puedes usar números mayores o iguales que 0.\n" +
+                    "1. Introducir lista directamente.\n2. Extraer lista de archivo de texto.");
+
+                int choice_input = Convert.ToInt32(Console.ReadLine());
+
+                switch (choice_input)
+                {
+                    // Directamente
+                    case 1:
+                        Console.WriteLine("Excelente, primero introduce el número de elementos (número entero positivo) que deseas introducir.");
+                        int amount = Convert.ToInt32(Console.ReadLine());
+                        float[] list = new float[amount];
+                        for (int i = 1; i <= amount; i++)
+                        {
+                            Console.WriteLine($"Introduce el elemento #{i}");
+                            string input = Console.ReadLine();
+                            float element = float.Parse(input);
+                            list[i - 1] = element;
+                        }
+
+                        DateTime beginning = DateTime.Now;
+                        float[] ordered = Fx_Sorting(list);
+                        DateTime ending = DateTime.Now;
+                        TimeSpan difference = ending - beginning;
+
+                        Console.WriteLine("La lista ordenada es la siguiente: ");
+                        Console.Write("[");
+                        foreach (float floaty in ordered)
+                        {
+                            Console.Write(" " + floaty + ",");
+                        }
+
+                        Console.WriteLine(" ]");
+
+                        if (difference.Milliseconds < 5000)
+                        {
+                            int little_difference = difference.Milliseconds;
+                            Console.WriteLine($"Y el ordenamiento tomó {little_difference} milisegundos.");
+                        } else
+                        {
+                            Console.WriteLine($"Y el ordenamiento tomó {difference}.");
+                        }
+
+                        break;
+
+                    // Archivo de texto
+                    case 2:
+                        break;
+
+                    default:
+                        Console.Clear();
+                        Console.WriteLine("Opción no válida, presiona cualquier tecla para regresar e intenta de nuevo.");
+                        Console.ReadKey();
+                        Console.Clear();
+                        CallSortingAlgorithm(Fx_Sorting);
+                        break;
+                }
+
+                KeyContinue();
+
+                bool valid = false;
+                while (!valid)
+                {
+                    Console.WriteLine("¿Qué deseas hacer ahora?\n\n1. Repetir el algoritmo de ordenamiento con " +
+                        "otra lista.\n2. Regresar al menú anterior.");
+                    sbyte repeat_return = Convert.ToSByte(Console.ReadLine());
+
+                    switch (repeat_return)
+                    {
+                        case 1: CallSortingAlgorithm(Fx_Sorting); break;
+                        case 2: Choice(); break;
+                        case 3: Console.WriteLine("Opción no válida, elige una opción válida"); break;
+                    }
+                }
+            }
+
             int choice = Convert.ToInt32(Console.ReadLine());
             Console.Clear();
 
@@ -61,6 +148,9 @@ namespace Ordenamiento
                         "se reducirá de nuevo.\n" +
                         "[\t6\t5\t3\t8\t10\t]\n" +
                         "\t \t \t \tX\tX\n\n");
+
+                    CallSortingAlgorithm(Algor.Bubble);
+                    KeyContinue();
                     break;
 
                 // Inserción
@@ -112,6 +202,8 @@ namespace Ordenamiento
                     KeyContinue();
                     Console.WriteLine("A pesar de que tenga la misma complejidad temporal que el ordenamiento por burbuja " +
                         "es ligeramente más eficiente por este mecanismo de retroceso para comparar elementos, reduciendo la cantidad necesaria de comparaciones.");
+                    CallSortingAlgorithm(Algor.Insertion);
+                    KeyContinue();
                     break;
 
                 // Shell
@@ -166,6 +258,8 @@ namespace Ordenamiento
                     Console.WriteLine("Como se puede ver en este caso, el ordenamiento Shell es más eficiente " +
                         "con esta lista que el ordenamiento por inserción. Esto demuestra que tiende a ser más eficiente, " +
                         "pero no siempre se da el caso.");
+                    CallSortingAlgorithm(Algor.Shell);
+                    KeyContinue();
                     break;
 
                 // Bogosort
@@ -194,12 +288,22 @@ namespace Ordenamiento
                         "iteraciones, como en el ejemplo; pero, debido a que se basa en la probabilidad para ordenarse, en el " +
                         "peor de los casos puede tardarse una cantidad de tiempo infinita para ordenarse.\n\n" +
                         "ADVERTENCIA: Se recomienda no usar muchos elementos con este algoritmo, debido a que puede ser muy tardado.");
+                    CallSortingAlgorithm(Algor.Bogo);
+                    KeyContinue();
                     break;
 
                 // Regresar
                 case 5:
                     Console.Clear();
                     Program.Menu();
+                    break;
+
+                default:
+                    Console.Clear();
+                    Console.WriteLine("Opción no válida, presiona cualquier tecla para regresar e intenta de nuevo.");
+                    Console.ReadKey();
+                    Console.Clear();
+                    Choice();
                     break;
             }
         }

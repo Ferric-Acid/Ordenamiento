@@ -1,0 +1,7 @@
+C:\Users\thebl\source\repos\Ordenamiento\Ordenamiento\bin\Debug\Ordenamiento.exe.config
+C:\Users\thebl\source\repos\Ordenamiento\Ordenamiento\bin\Debug\Ordenamiento.exe
+C:\Users\thebl\source\repos\Ordenamiento\Ordenamiento\bin\Debug\Ordenamiento.pdb
+C:\Users\thebl\source\repos\Ordenamiento\Ordenamiento\obj\Debug\Ordenamiento.csproj.AssemblyReference.cache
+C:\Users\thebl\source\repos\Ordenamiento\Ordenamiento\obj\Debug\Ordenamiento.csproj.CoreCompileInputs.cache
+C:\Users\thebl\source\repos\Ordenamiento\Ordenamiento\obj\Debug\Ordenamiento.exe
+C:\Users\thebl\source\repos\Ordenamiento\Ordenamiento\obj\Debug\Ordenamiento.pdb

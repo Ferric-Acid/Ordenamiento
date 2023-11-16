@@ -51,6 +51,14 @@ namespace Ordenamiento
                     Console.Clear();
                     Environment.Exit(0);
                     break;
+
+                default:
+                    Console.Clear();
+                    Console.WriteLine("Opción no válida, presiona cualquier tecla para regresar e intenta de nuevo.");
+                    Console.ReadKey();
+                    Console.Clear();
+                    Menu();
+                    break;
             }
         }
         
@@ -62,4 +70,3 @@ namespace Ordenamiento
         }
     }
 }
-
