@@ -21,14 +21,14 @@ namespace Ordenamiento
 
         public static void Choice()
         {
-
+            Console.Clear();
             while (string.IsNullOrWhiteSpace(user))
             {
                 Console.WriteLine("Antes de comenzar, ¿cuál es nombre de la carpeta de su usuario?");
                 user = Console.ReadLine().ToLower();
             }
 
-            Console.WriteLine("Elige la operación que desees realizar sobre el archivo.\n\n1. Crear un archivo " +
+            Console.WriteLine("Elige la operación que desees realizar sobre un archivo.\n\n1. Crear un archivo " +
                 "nuevo.\n2. Leer un archivo existente.\n3. Actualizar los datos de un archivo.\n" +
                 "4. Borrar un archivo.\n5. Regresar al menú anterior.");
 
@@ -50,25 +50,25 @@ namespace Ordenamiento
             }
         }
 
-        static void Nonexistent_Empty_Directory(string dir)
+        public static void Nonexistent_Empty_Directory(string dir)
         {
             if (!Directory.Exists(dir))
             {
                 Console.WriteLine("El directorio no existe, no hay archivos para mostrar.");
                 KeyContinue();
-                Choice();
+                Text.Choice();
             }
 
             if (!Directory.EnumerateFileSystemEntries(dir).Any())
             {
                 Console.WriteLine("El directorio existe, pero está vacío.");
                 KeyContinue();
-                Choice();
+                Text.Choice();
             }
         }
 
 
-        static void Create()
+        public static void Create()
         {
             if (!Directory.Exists(directory))
             {
@@ -143,6 +143,13 @@ namespace Ordenamiento
         {
             Nonexistent_Empty_Directory(directory);
 
+            Console.WriteLine("Estos son los archivos existentes:");
+            string[] lists = Directory.GetFiles(directory);
+            foreach (string list in lists)
+            {
+                Console.WriteLine(Path.GetFileName(list));
+            }
+
             Console.WriteLine("¿Cuál archivo deseas modificar? Se le agregará la extensión \".txt\".");
             string searched = Console.ReadLine() + ".txt";
             route = Path.Combine(directory, searched);
@@ -154,7 +161,7 @@ namespace Ordenamiento
                 Choice();
             }
 
-            string Overwrite_Add()
+            void Overwrite_Add()
             {
                 Console.WriteLine("¿Deseas sobreescribir el archivo o añadir información?\n\n1. Sobreescribir\n" +
                     "2. Añadir texto");
@@ -165,50 +172,63 @@ namespace Ordenamiento
                         File.WriteAllText(route, string.Empty);
                         break;
 
+                    case 2:
+                        break;
+
                     default:
                         Console.WriteLine("Opción no válida, intoduce una opción válida.");
                         KeyContinue();
                         Overwrite_Add();
                         break;
                 }
-
-                Console.WriteLine("Introduce los elementos nuevos para el archivo. Deja el espacio en blanco cuando " +
-                "termines.");
-                using (StreamWriter writer = File.AppendText(route))
-                {
-                    string input;
-                    while (!string.IsNullOrEmpty((input = Console.ReadLine())))
-                    {
-                        writer.WriteLine(input);
-                    }
-                }
-
-                Console.WriteLine("Archivo actualizado exitosamente.");
-                KeyContinue();
-                Choice();
             }
 
-            static void Delete()
+            Overwrite_Add();
+
+            Console.WriteLine("Introduce los elementos nuevos para el archivo. Deja el espacio en blanco cuando " +
+            "termines.");
+            using (StreamWriter writer = File.AppendText(route))
             {
-                Nonexistent_Empty_Directory(directory);
-
-                Console.WriteLine("¿Cuál archivo deseas modificar? Se le agregará la extensión \".txt\".");
-                string to_delete = Console.ReadLine() + ".txt";
-                route = Path.Combine(directory, to_delete);
-
-                if (File.Exists(route))
-                {
-                    File.Delete(route);
-                    Console.WriteLine("Archivo eliminado exitosamente.");
-                }
-                else
-                {
-                    Console.WriteLine("Tal archivo no existe.");
-                }
-
-                KeyContinue();
-                Choice();
+               string input;
+               while (!string.IsNullOrEmpty((input = Console.ReadLine())))
+               {
+                    writer.WriteLine(input);
+               }
             }
+
+            Console.WriteLine("Archivo actualizado exitosamente.");
+            KeyContinue();
+            Choice();
+            
+        }
+
+        static void Delete()
+        {
+            Nonexistent_Empty_Directory(directory);
+
+            Console.WriteLine("Estos son los archivos existentes:");
+            string[] lists = Directory.GetFiles(directory);
+            foreach (string list in lists)
+            {
+                Console.WriteLine(Path.GetFileName(list));
+            }
+
+            Console.WriteLine("¿Cuál archivo deseas eliminar? Se le agregará la extensión \".txt\".");
+            string to_delete = Console.ReadLine() + ".txt";
+            route = Path.Combine(directory, to_delete);
+
+            if (File.Exists(route))
+            {
+                File.Delete(route);
+                Console.WriteLine("Archivo eliminado exitosamente.");
+            }
+            else
+            {
+                Console.WriteLine("Tal archivo no existe.");
+            }
+
+            KeyContinue();
+            Choice();
         }
     }
 }

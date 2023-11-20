@@ -9,13 +9,20 @@ namespace Ordenamiento
 {
     internal class Order
     {
+        static string user = "";
+        static string list_route = "";
+        static string list_file = "";
+        static string list_name = "";
+
         public static void Choice()
         {
+
             void KeyContinue()
             {
                 Console.WriteLine("\n[Presiona cualquier tecla para continuar.]\n");
                 Console.ReadKey();
             }
+
             Console.WriteLine("Algoritmos de ordenamiento\nElige el algoritmo que desees revisar.\n\n1. Ordenamiento por burbuja" +
                 "\n2. Ordenamiento por inserción.\n3. Ordenamiento Shell.\n4. Bogosort.\n5. Regresar al menú anterior.");
 
@@ -34,7 +41,9 @@ namespace Ordenamiento
                     "1. Introducir lista directamente.\n2. Extraer lista de archivo de texto.");
 
                 int choice_input = Convert.ToInt32(Console.ReadLine());
-
+                DateTime beginning = DateTime.Now;
+                DateTime ending = DateTime.Now;
+                TimeSpan difference = ending - beginning;
                 switch (choice_input)
                 {
                     // Directamente
@@ -50,33 +59,85 @@ namespace Ordenamiento
                             list[i - 1] = element;
                         }
 
-                        DateTime beginning = DateTime.Now;
+                        beginning = DateTime.Now;
                         float[] ordered = Fx_Sorting(list);
-                        DateTime ending = DateTime.Now;
-                        TimeSpan difference = ending - beginning;
+                        ending = DateTime.Now;
+                        difference = ending - beginning;
 
                         Console.WriteLine("La lista ordenada es la siguiente: ");
                         Console.Write("[");
                         foreach (float floaty in ordered)
                         {
-                            Console.Write(" " + floaty + ",");
+                            Console.Write(" " + floaty + " ");
                         }
-
-                        Console.WriteLine(" ]");
-
-                        if (difference.Milliseconds < 5000)
-                        {
-                            int little_difference = difference.Milliseconds;
-                            Console.WriteLine($"Y el ordenamiento tomó {little_difference} milisegundos.");
-                        } else
-                        {
-                            Console.WriteLine($"Y el ordenamiento tomó {difference}.");
-                        }
-
+                        Console.WriteLine("]");
                         break;
 
                     // Archivo de texto
                     case 2:
+                        while (string.IsNullOrWhiteSpace(user))
+                        {
+                            Console.WriteLine("Antes de comenzar, ¿cuál es nombre de la carpeta de su usuario?");
+                            user = Console.ReadLine().ToLower();
+                        }
+
+                        string direc = $"C:\\Users\\{user}\\Documents\\Sorting";
+                        Text.Nonexistent_Empty_Directory(direc);
+
+                        void Order_Read()
+                        {
+                            Console.WriteLine($"Dentro del directorio {direc} están los siguientes archivos:");
+                            string[] files = Directory.GetFiles(direc);
+                            foreach (string file in files)
+                            {
+                                Console.WriteLine(Path.GetFileName(file));
+                            }
+                            Console.WriteLine("¿Cuál archivo deseas ordenar? Introduce el nombre del archivo sin la extensión \".txt\".");
+                            list_name = Console.ReadLine();
+                            list_file = list_name + ".txt";
+                            list_route = Path.Combine(direc, list_file);
+
+                            if (!File.Exists(list_route))
+                            {
+                                Console.WriteLine("Tal archivo no existe, ingresa un nombre válido.");
+                                Order_Read();
+                            }
+                        }
+                        Order_Read();
+
+                        string[] elements_as_string = File.ReadAllLines(list_route);
+                        float[] unordered = new float[elements_as_string.Length];
+
+                        for (int i = 0; i < unordered.Length; i++)
+                        {
+                            unordered[i] = float.Parse(elements_as_string[i]);
+                        }
+
+                        beginning = DateTime.Now;
+                        float[] ordered_list = Fx_Sorting(unordered);
+                        ending = DateTime.Now;
+                        difference = ending - beginning;
+
+                        string ordered_txt = list_name + "_ordered.txt";
+                        string ordered_route = Path.Combine(direc, ordered_txt);
+
+                        if (File.Exists(ordered_route))
+                        {
+                            File.WriteAllText(ordered_route, string.Empty);
+                        }
+                        else
+                        {
+                            File.Create(ordered_route).Close();
+                        }
+                        
+                        using (StreamWriter writer = File.AppendText(ordered_route))
+                        {
+                            for (int i = 0; i < ordered_list.Length; i++)
+                            {
+                                writer.WriteLine(ordered_list[i]);
+                            }
+                        }
+                        Console.WriteLine($"La lista ha sido ordenada, checa el archivo {ordered_route} en {direc}.");
                         break;
 
                     default:
@@ -86,6 +147,16 @@ namespace Ordenamiento
                         Console.Clear();
                         CallSortingAlgorithm(Fx_Sorting);
                         break;
+                }
+
+                if (difference.Milliseconds < 5000)
+                {
+                    int little_difference = difference.Milliseconds;
+                    Console.WriteLine($"Y el ordenamiento tomó {little_difference} milisegundos.");
+                }
+                else
+                {
+                    Console.WriteLine($"Y el ordenamiento tomó {difference}.");
                 }
 
                 KeyContinue();
@@ -101,7 +172,7 @@ namespace Ordenamiento
                     {
                         case 1: CallSortingAlgorithm(Fx_Sorting); break;
                         case 2: Choice(); break;
-                        case 3: Console.WriteLine("Opción no válida, elige una opción válida"); break;
+                        default: Console.WriteLine("Opción no válida, elige una opción válida"); break;
                     }
                 }
             }
