@@ -11,15 +11,32 @@ namespace Ordenamiento
 {
     internal class Program
     {
+        public static void KeyContinue()
+        {
+            Console.WriteLine("\n[Presiona cualquier tecla para continuar.]\n");
+            Console.ReadKey();
+        }
+
         public static void Menu()
         {
             Console.Clear();
-            // Nombre preliminar 2: OPTIMAL_ORDER
             Console.WriteLine("Bienvenido a OPTIMAL_ORDER. Elige la opción a la que desees acceder.\n" +
-                "\n1. Ver algoritmos de ordenamiento\n2. Ver sobre la notación asintótica\n3. Modificar archivos de texto con listas" +
-                "\n4. Terminar programa");
+                "\n1. Ver algoritmos de ordenamiento\n2. Ver sobre la notación asintótica\n3. Modificar archivos de texto con listas\n4. Terminar programa");
+            int choice = 0;
 
-            int choice = Convert.ToInt32(Console.ReadLine());
+            // En todas las instancias en las que al usuario se le de una elección, habrá una estructura try-catch, para que regresar al menú más cercano en caso de que el usuario ingrese una opción en un formato inválido.
+            try
+            {
+                choice = Convert.ToInt32(Console.ReadLine());
+            }
+            catch (System.FormatException)
+            {
+                Console.WriteLine("El formato de la entrada no es correcto, intenta introduce uno de los números especificados.");
+                KeyContinue();
+                Menu();
+                throw;
+            }
+            
             switch (choice)
             {
                 // Algoritmos de ordenamiento

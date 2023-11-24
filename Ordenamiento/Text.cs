@@ -9,12 +9,6 @@ namespace Ordenamiento
 {
     internal class Text
     {
-        static void KeyContinue()
-        {
-            Console.WriteLine("\n[Presiona cualquier tecla para continuar.]\n");
-            Console.ReadKey();
-        }
-
         static string user = "";
         static string directory = "";
         static string route = "";
@@ -22,17 +16,32 @@ namespace Ordenamiento
         public static void Choice()
         {
             Console.Clear();
+            // Siempre que se ejecute el programa, se le pedirá el nombre de la carpeta del usuario, pero sólo una vez.
             while (string.IsNullOrWhiteSpace(user))
             {
                 Console.WriteLine("Antes de comenzar, ¿cuál es nombre de la carpeta de su usuario?");
                 user = Console.ReadLine().ToLower();
             }
 
-            Console.WriteLine("Elige la operación que desees realizar sobre un archivo.\n\n1. Crear un archivo " +
+            Console.WriteLine("Modificación de archivos de texto con listas\nElige la operación que desees realizar sobre un archivo.\n\n1. Crear un archivo " +
                 "nuevo.\n2. Leer un archivo existente.\n3. Actualizar los datos de un archivo.\n" +
                 "4. Borrar un archivo.\n5. Regresar al menú anterior.");
 
-            sbyte CRUD_return = Convert.ToSByte(Console.ReadLine());
+            int CRUD_return = 0;
+
+            try
+            {
+                CRUD_return = Convert.ToInt32(Console.ReadLine());
+            }
+            catch (System.FormatException)
+            {
+                Console.WriteLine("El formato de la entrada no es correcto, intenta introduce uno de los números especificados.");
+                Program.KeyContinue();
+                Console.Clear();
+                Choice();
+                throw;
+            }
+
             directory = $"C:\\Users\\{user}\\Documents\\Sorting";
             switch (CRUD_return)
             {
@@ -43,33 +52,35 @@ namespace Ordenamiento
                 case 5: Program.Menu(); break;
                 default:
                     Console.WriteLine("Opción no válida, introduce una opción válida.");
-                    KeyContinue();
+                    Program.KeyContinue();
                     Console.Clear();
                     Choice();
                     break;
             }
         }
 
+        // Determina si el directorio "C:\Users\[nombre de usuario]\Documents\Sorting" no existe o si está vacío.
         public static void Nonexistent_Empty_Directory(string dir)
         {
             if (!Directory.Exists(dir))
             {
                 Console.WriteLine("El directorio no existe, no hay archivos para mostrar.");
-                KeyContinue();
-                Text.Choice();
+                Program.KeyContinue();
+                Text.Create();
             }
 
             if (!Directory.EnumerateFileSystemEntries(dir).Any())
             {
                 Console.WriteLine("El directorio existe, pero está vacío.");
-                KeyContinue();
-                Text.Choice();
+                Program.KeyContinue();
+                Text.Create();
             }
         }
 
 
         public static void Create()
         {
+            // Si el directorio no existe, se creará.
             if (!Directory.Exists(directory))
             {
                 Console.WriteLine("Se creará el directorio \"Sorting\" en \"Documents\".");
@@ -87,6 +98,7 @@ namespace Ordenamiento
                 Console.WriteLine("Ingresa los números a insertar en el documento, al terminar, deja la línea en blanco.");
 
 
+                // Permitirá almacenar valores en el archivo recién creado, hasta que la entrada del usuario esté vacía.
                 using (StreamWriter writer = File.AppendText(route))
                 {
                     string input;
@@ -100,7 +112,7 @@ namespace Ordenamiento
             {
                 Console.WriteLine($"El archivo en {route} ya existe.");
             }
-            KeyContinue();
+            Program.KeyContinue();
             Choice();
         }
 
@@ -108,6 +120,7 @@ namespace Ordenamiento
         {
             Nonexistent_Empty_Directory(directory);
 
+            // Primero se muestran todos los archivos que existen en el directorio.
             Console.WriteLine("Estos son los archivos existentes:");
             string[] lists = Directory.GetFiles(directory);
             foreach (string list in lists)
@@ -115,6 +128,7 @@ namespace Ordenamiento
                 Console.WriteLine(Path.GetFileName(list));
             }
 
+            // Se le pide al usuario el nombre del archivo que desea consultar, sin incluir la extensión .txt
             Console.WriteLine("¿Cuál archivo deseas ver? Se le agregará la extensión \".txt\".");
             string file = Console.ReadLine() + ".txt";
             route = Path.Combine(directory, file);
@@ -122,10 +136,11 @@ namespace Ordenamiento
             if (!File.Exists(route))
             {
                 Console.WriteLine("Tal archivo no existe.");
-                KeyContinue();
+                Program.KeyContinue();
                 Choice();
             }
 
+            // Se mostrarán todos los elementos existentes en el directorio.
             Console.WriteLine("Estos son los elementos:");
             using (StreamReader reader = File.OpenText(route))
             {
@@ -135,7 +150,7 @@ namespace Ordenamiento
                     Console.WriteLine(element);
                 }
             }
-            KeyContinue();
+            Program.KeyContinue();
             Choice();
         }
 
@@ -150,6 +165,7 @@ namespace Ordenamiento
                 Console.WriteLine(Path.GetFileName(list));
             }
 
+            // Se le pide al usuario el nombre del archivo que desea consultar, sin incluir la extensión .txt
             Console.WriteLine("¿Cuál archivo deseas modificar? Se le agregará la extensión \".txt\".");
             string searched = Console.ReadLine() + ".txt";
             route = Path.Combine(directory, searched);
@@ -157,18 +173,33 @@ namespace Ordenamiento
             if (!File.Exists(route))
             {
                 Console.WriteLine("Tal archivo no existe.");
-                KeyContinue();
+                Program.KeyContinue();
                 Choice();
             }
 
+            // Al modificar un archivo ya existente, sólo se puede sobreescribir o añadir más información al final de este.
             void Overwrite_Add()
             {
-                Console.WriteLine("¿Deseas sobreescribir el archivo o añadir información?\n\n1. Sobreescribir\n" +
-                    "2. Añadir texto");
-                sbyte OA_choice = Convert.ToSByte(Console.ReadLine());
+                Console.WriteLine("¿Deseas sobreescribir el archivo o añadir información?\n\n1. Sobreescribir\n2. Añadir texto");
+                int OA_choice = 0;
+
+                try
+                {
+                    OA_choice = Convert.ToInt32(Console.ReadLine());
+                }
+                catch (System.FormatException)
+                {
+                    Console.WriteLine("El formato de la entrada no es correcto, intenta introduce uno de los números especificados.");
+                    Program.KeyContinue();
+                    Console.Clear();
+                    Overwrite_Add();
+                    throw;
+                }
+
                 switch (OA_choice)
                 {
                     case 1:
+                        // En caso de que se desee sobreescribir el archivo elegido, se formateará el archivo.
                         File.WriteAllText(route, string.Empty);
                         break;
 
@@ -177,7 +208,7 @@ namespace Ordenamiento
 
                     default:
                         Console.WriteLine("Opción no válida, intoduce una opción válida.");
-                        KeyContinue();
+                        Program.KeyContinue();
                         Overwrite_Add();
                         break;
                 }
@@ -185,8 +216,8 @@ namespace Ordenamiento
 
             Overwrite_Add();
 
-            Console.WriteLine("Introduce los elementos nuevos para el archivo. Deja el espacio en blanco cuando " +
-            "termines.");
+            Console.WriteLine("Introduce los elementos nuevos para el archivo. Deja el espacio en blanco cuando termines.");
+            // Independientemente de que se haya solicitado sobreescribir o agregar información al archivo de texto, se usa el método File.AppendText para realizar la operación solicitada.
             using (StreamWriter writer = File.AppendText(route))
             {
                string input;
@@ -197,9 +228,8 @@ namespace Ordenamiento
             }
 
             Console.WriteLine("Archivo actualizado exitosamente.");
-            KeyContinue();
+            Program.KeyContinue();
             Choice();
-            
         }
 
         static void Delete()
@@ -213,6 +243,7 @@ namespace Ordenamiento
                 Console.WriteLine(Path.GetFileName(list));
             }
 
+            // Se le pide al usuario el nombre del archivo que desea consultar, sin incluir la extensión .txt
             Console.WriteLine("¿Cuál archivo deseas eliminar? Se le agregará la extensión \".txt\".");
             string to_delete = Console.ReadLine() + ".txt";
             route = Path.Combine(directory, to_delete);
@@ -227,7 +258,7 @@ namespace Ordenamiento
                 Console.WriteLine("Tal archivo no existe.");
             }
 
-            KeyContinue();
+            Program.KeyContinue();
             Choice();
         }
     }
