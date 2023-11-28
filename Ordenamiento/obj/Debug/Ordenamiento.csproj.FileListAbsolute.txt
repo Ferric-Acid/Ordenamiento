@@ -5,3 +5,10 @@ C:\Users\thebl\source\repos\Ordenamiento\Ordenamiento\obj\Debug\Ordenamiento.csp
 C:\Users\thebl\source\repos\Ordenamiento\Ordenamiento\obj\Debug\Ordenamiento.csproj.CoreCompileInputs.cache
 C:\Users\thebl\source\repos\Ordenamiento\Ordenamiento\obj\Debug\Ordenamiento.exe
 C:\Users\thebl\source\repos\Ordenamiento\Ordenamiento\obj\Debug\Ordenamiento.pdb
+C:\Users\thebl\Documents\GitHub\Ordenamiento\Ordenamiento\bin\Debug\Ordenamiento.exe.config
+C:\Users\thebl\Documents\GitHub\Ordenamiento\Ordenamiento\bin\Debug\Ordenamiento.exe
+C:\Users\thebl\Documents\GitHub\Ordenamiento\Ordenamiento\bin\Debug\Ordenamiento.pdb
+C:\Users\thebl\Documents\GitHub\Ordenamiento\Ordenamiento\obj\Debug\Ordenamiento.csproj.AssemblyReference.cache
+C:\Users\thebl\Documents\GitHub\Ordenamiento\Ordenamiento\obj\Debug\Ordenamiento.csproj.CoreCompileInputs.cache
+C:\Users\thebl\Documents\GitHub\Ordenamiento\Ordenamiento\obj\Debug\Ordenamiento.exe
+C:\Users\thebl\Documents\GitHub\Ordenamiento\Ordenamiento\obj\Debug\Ordenamiento.pdb
