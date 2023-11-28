@@ -66,14 +66,14 @@ namespace Ordenamiento
             {
                 Console.WriteLine("El directorio no existe, no hay archivos para mostrar.");
                 Program.KeyContinue();
-                Text.Create();
+                Text.Choice();
             }
 
             if (!Directory.EnumerateFileSystemEntries(dir).Any())
             {
                 Console.WriteLine("El directorio existe, pero está vacío.");
                 Program.KeyContinue();
-                Text.Create();
+                Text.Choice();
             }
         }
 
@@ -104,6 +104,19 @@ namespace Ordenamiento
                     string input;
                     while (!string.IsNullOrEmpty((input = Console.ReadLine())))
                     {
+                        float checker = 0f;
+                        try
+                        {
+                            checker = float.Parse(input);
+                        }
+                        catch (System.FormatException)
+                        {
+                            Console.WriteLine("La entrada no está en un formato válido, introduce un número.");
+                            // Si la entrada no está en el formato válido, no se guardará tal entrada, se tendrá que volver a introducir.
+                            continue;
+                            throw;
+                        }
+
                         writer.WriteLine(input);
                     }
                 }
@@ -223,6 +236,19 @@ namespace Ordenamiento
                string input;
                while (!string.IsNullOrEmpty((input = Console.ReadLine())))
                {
+                    float checker = 0f;
+                    try
+                    {
+                        checker = float.Parse(input);
+                    }
+                    catch (System.FormatException)
+                    {
+                        Console.WriteLine("La entrada no está en un formato válido, introduce un número.");
+                        // Si la entrada no está en el formato válido, no se guardará tal entrada, se tendrá que volver a introducir.
+                        continue;
+                        throw;
+                    }
+
                     writer.WriteLine(input);
                }
             }

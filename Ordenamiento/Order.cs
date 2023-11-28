@@ -127,7 +127,7 @@ namespace Ordenamiento
                                 Console.WriteLine("El formato de la entrada no es correcto, introduce un número entero.");
                                 Program.KeyContinue();
                                 Input();
-                                throw;
+                                //throw;
                             }
 
                             if (amount < 1)
@@ -248,7 +248,7 @@ namespace Ordenamiento
                                 writer.WriteLine(ordered_list[i]);
                             }
                         }
-                        Console.WriteLine($"La lista ha sido ordenada, checa el archivo {ordered_route} en {direc}.");
+                        Console.WriteLine($"La lista ha sido ordenada, checa el archivo {ordered_txt} en {direc}.");
                         break;
 
                     default:

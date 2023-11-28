@@ -21,7 +21,7 @@ namespace Ordenamiento
         {
             Console.Clear();
             Console.WriteLine("Bienvenido a OPTIMAL_ORDER. Elige la opción a la que desees acceder.\n" +
-                "\n1. Ver algoritmos de ordenamiento\n2. Ver sobre la notación asintótica\n3. Modificar archivos de texto con listas\n4. Terminar programa");
+                "\n1. Ver algoritmos de ordenamiento\n2. Ver sobre la notación asintótica\n3. Ver archivos de texto con listas\n4. Terminar programa");
             int choice = 0;
 
             // En todas las instancias en las que al usuario se le de una elección, habrá una estructura try-catch, para que regresar al menú más cercano en caso de que el usuario ingrese una opción en un formato inválido.
